@@ -18,6 +18,7 @@ const Bookings = () => {
       });
   }, [url]);
 
+  // deleting
   const handleDelete = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -49,6 +50,34 @@ const Bookings = () => {
     });
   };
 
+  // updating
+  const handleConfirm = id => {
+   fetch(`http://localhost:5000/bookings/${id}`, {
+    method: "PATCH",
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({status: 'confirm'})
+   })
+   .then(res => res.json())
+   .then(data => {
+    console.log(data);
+    if(data.modifiedCount){
+      Swal.fire({
+        title: 'Success',
+        text: 'Updated Successfully',
+        icon: 'success',
+        confirmButtonText: 'ok'
+      })
+      const remaining = bookings.filter(booking => booking._id !== id);
+      const update = bookings.find(booking => booking._id === id);
+      update.status = 'confirm'
+      const newBookings = [update, ...remaining];
+      setBookings(newBookings)
+    }
+   })
+  }
+
   return (
     <div>
       <h2 className="text-2xl font-bold">
@@ -79,6 +108,7 @@ const Bookings = () => {
                 key={booking._id}
                 booking={booking}
                 handleDelete={handleDelete}
+                handleConfirm={handleConfirm}
               ></Booking>
             ))}
           </tbody>
