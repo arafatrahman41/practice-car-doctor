@@ -1,9 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import img from "../../assets/images/login/login.svg";
 import useAuth from "../../hook/useAuth";
+import axios from "axios";
 
 const Login = () => {
     const {signInUser} = useAuth();
+    const location = useLocation();
+    const navigate = useNavigate();
+    // console.log(location);
 
     const handleLogin = e => {
         e.preventDefault();
@@ -14,7 +18,14 @@ const Login = () => {
 
         signInUser(email, password)
         .then(result => {
-            console.log(result.user);
+            const loggedInUser = result.user;
+            console.log(loggedInUser);
+            const user = {email}
+            // navigate(location?.state ? location?.state : '/')
+            axios.post("http://localhost:5000/jwt", user)
+            .then(res => {
+              console.log(res.data);
+            })
         })
         .catch(error => {
             console.log(error);
