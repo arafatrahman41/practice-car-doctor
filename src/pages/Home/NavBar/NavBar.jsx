@@ -30,7 +30,10 @@ const NavBar = () => {
         <Link to="/contact">Contact</Link>
       </li>
       {
-        user ? <button onClick={signOut}>Log Out</button> : <li>
+        user ? <>
+        <li><Link to="/bookings">My Bookings</Link></li>
+        <li><button onClick={signOut}>Log Out</button></li>
+        </> : <li>
         <Link to="/login">Login</Link>
       </li>
       }
