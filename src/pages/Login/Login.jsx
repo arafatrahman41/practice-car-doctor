@@ -4,33 +4,36 @@ import useAuth from "../../hook/useAuth";
 import axios from "axios";
 
 const Login = () => {
-    const {signInUser} = useAuth();
-    const location = useLocation();
-    const navigate = useNavigate();
-    // console.log(location);
+  const { signInUser } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  // console.log(location);
 
-    const handleLogin = e => {
-        e.preventDefault();
-        const form = e.target;
-        const email = form.email.value;
-        const password = form.password.value;
-        console.log(email, password);
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+    console.log(email, password);
 
-        signInUser(email, password)
-        .then(result => {
-            const loggedInUser = result.user;
-            console.log(loggedInUser);
-            const user = {email}
-            // navigate(location?.state ? location?.state : '/')
-            axios.post("http://localhost:5000/jwt", user)
-            .then(res => {
-              console.log(res.data);
-            })
-        })
-        .catch(error => {
-            console.log(error);
-        })
-    }
+    signInUser(email, password)
+      .then((result) => {
+        const loggedInUser = result.user;
+        console.log(loggedInUser);
+        const user = { email };
+        axios
+          .post("http://localhost:5000/jwt", user, { withCredentials: true })
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.success) {
+              navigate(location?.state ? location?.state : "/");
+            }
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <div className="hero  min-h-screen my-20">
       <div className="hero-content flex-col lg:flex-row gap-16">
@@ -69,7 +72,10 @@ const Login = () => {
             </div>
           </form>
           <p className="text-center mb-8">
-            Do not have an account? <Link to="/register" className="text-orange-600 font-bold">Register</Link>
+            Do not have an account?{" "}
+            <Link to="/register" className="text-orange-600 font-bold">
+              Register
+            </Link>
           </p>
         </div>
       </div>

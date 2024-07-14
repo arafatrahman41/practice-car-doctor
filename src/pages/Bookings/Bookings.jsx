@@ -3,6 +3,7 @@ import useAuth from "../../hook/useAuth";
 import Booking from "./Booking";
 import { FcDeleteDatabase } from "react-icons/fc";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const Bookings = () => {
   const { user } = useAuth();
@@ -10,12 +11,16 @@ const Bookings = () => {
 
   const url = `http://localhost:5000/bookings?email=${user?.email}`;
   useEffect(() => {
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setBookings(data);
-      });
+    axios.get(url, {withCredentials: true})
+    .then(res => {
+      setBookings(res.data)
+    })
+    // fetch(url)
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     console.log(data);
+    //     setBookings(data);
+    //   });
   }, [url]);
 
   // deleting
